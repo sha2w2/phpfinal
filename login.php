@@ -1,77 +1,34 @@
 <?php
+require_once 'db_connect.php';
+require_once 'User.php';
 
-session_start();
+$db = new Database();
+$user = new User($db);
 
-require 'dbconnect.php';
-
-$username = $password = '';
-$username_err = $password_err = $login_err = '';
+$username = $password = "";
+$username_err = $password_err = $login_err = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-
     if (empty(trim($_POST["username"]))) {
         $username_err = "Please enter username.";
     } else {
         $username = trim($_POST["username"]);
     }
     
-   
     if (empty(trim($_POST["password"]))) {
         $password_err = "Please enter your password.";
     } else {
         $password = trim($_POST["password"]);
     }
-
+    
     if (empty($username_err) && empty($password_err)) {
-       
-        $sql = "SELECT id, username, password FROM users WHERE username = ?";
-        
-        if ($stmt = $conn->prepare($sql)) {
-            
-            $stmt->bind_param("s", $param_username);
-          
-            $param_username = $username;
-            
-            if ($stmt->execute()) {
-             
-                $stmt->store_result();
-               
-                if ($stmt->num_rows == 1) {
-                   
-                    $stmt->bind_result($id, $username, $hashed_password);
-                    if ($stmt->fetch()) {
-                        if (password_verify($password, $hashed_password)) {
-                            
-                            session_start();
-                            
-                           
-                            $_SESSION["loggedin"] = true;
-                            $_SESSION["id"] = $id;
-                            $_SESSION["username"] = $username;                            
-                            
-                          
-                            header("location: welcome.php");
-                        } else {
-                           
-                            $login_err = "Invalid username or password.";
-                        }
-                    }
-                } else {
-                  
-                    $login_err = "Invalid username or password.";
-                }
-            } else {
-                echo "Oops! Something went wrong. Please try again later.";
-            }
-
-        
-            $stmt->close();
+        if ($user->login($username, $password)) {
+            header("location: welcome.php");
+            exit;
+        } else {
+            $login_err = "Invalid username or password.";
         }
     }
-    
-    
-    $conn->close();
 }
 ?>
 
@@ -95,13 +52,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php 
         if (!empty($login_err)) {
             echo '<div class="alert alert-danger">' . $login_err . '</div>';
-        }        
+        }
         ?>
 
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
+                <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($username); ?>">
                 <span class="help-block"><?php echo $username_err; ?></span>
             </div>    
             <div class="form-group">

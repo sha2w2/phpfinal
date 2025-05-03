@@ -1,5 +1,5 @@
 <?php
-class Database {
+class database {
     private $host = "localhost";
     private $username = "root";
     private $password = "";
@@ -24,4 +24,5 @@ class Database {
         $this->conn->close();
     }
 }
-?>
+
+?> 

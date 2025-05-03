@@ -1,9 +1,9 @@
 <?php
 require_once 'db_connect.php';
-require_once 'User.php';
+require_once 'user.php';
 
-$db = new Database();
-$user = new User($db);
+$db = new database();
+$user = new user($db);
 
 $username = $password = "";
 $username_err = $password_err = $login_err = "";

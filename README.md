@@ -1,44 +1,53 @@
-# Phase 1 & 1.1: Initial Implementation
+# Password Manager: Version Comparison
 
-Core Architecture: Implemented a basic object-oriented (OOP) structure using a mixed-case naming convention.
-Security Features:
-Employed AES-256 encryption for password storage.
-Utilized Bcrypt for password hashing.
-Implemented session-based authentication.
-Functionality:
-Enabled user registration and login.
-Provided basic password storage and retrieval.
-Offered simple password generation.
-Limitations:
-Suffered from inconsistent code style.
-Featured minimal input validation.
-Had basic error handling.
-Offered limited extensibility.
-Phase 2: Enhanced Implementation
+## Phase 1 (Initial Release)
+**Core**  
+- Basic OOP implementation  
+- Mixed-case naming convention  
 
-Structural Improvements:
-Adopted a standardized lowercase naming convention for classes, methods, and variables.
-Refactored abstract classes and interfaces for better design.
-Improved code organization through better separation of concerns.
-Security Enhancements:
-Strengthened key rotation mechanisms.
-Added activity logging for auditing.
-Implemented password strength evaluation.
-Enhanced session management for improved security.
-Functional Upgrades:
-Enabled advanced password generation with configurable parameters.
-Implemented comprehensive form validation.
-Improved error handling and user feedback.
-Extended password metadata support (categories, favorites).
-Technical Improvements:
-Optimized the database schema.
-Streamlined cryptographic operations for efficiency.
-Reduced code complexity.
-Improved documentation.
-Key Changes: Phase 1.1 to Phase 2
+**Features**  
+- User registration/login  
+- Password storage & generation  
 
-Consistency: Standardized naming conventions for improved maintainability.
-Security: Enhanced encryption and auditing capabilities.
-Extensibility: Refined abstract classes for future development.
-Usability: Implemented more robust validation and feedback mechanisms.
-Performance: Optimized database interactions and cryptographic operations.
+**Limitations**  
+- Inconsistent code style  
+- Basic validation/error handling  
+- Limited extension capabilities  
+
+---
+
+## Phase 2 (Enhanced Release)
+**Structural Improvements**  
+- Standardized lowercase naming  
+- Refactored abstract classes  
+- Better code organization  
+
+**Security Upgrades**  
+- Enhanced key rotation  
+- Activity logging system  
+- Password strength evaluation  
+
+**New Functionality**  
+- Configurable password generator  
+- Advanced form validation  
+- Password metadata support  
+  - Categories  
+  - Favorites  
+
+**Performance**  
+- Optimized database queries  
+- Streamlined crypto operations  
+- Improved documentation  
+
+---
+
+### Key Advancements (1 → 2)
+| Category       | Improvement                          |
+|----------------|--------------------------------------|
+| **Consistency**| Unified naming conventions           |
+| **Security**   | Stronger encryption & auditing       |
+| **Extensibility**| Better foundation for future features|
+| **UX**         | Enhanced validation & feedback       |
+| **Speed**      | Faster operations                    |
+
+> Phase 2 delivers enterprise-grade security, maintainable codebase, and richer features while resolving Phase 1 limitations.

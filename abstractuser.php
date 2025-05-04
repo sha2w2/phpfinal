@@ -1,13 +1,14 @@
 <?php
-namespace App\Core;
+namespace app\core;
 
-abstract class AbstractUser {
+abstract class abstractuser {
     protected $id;
     protected $username;
     protected $password;
-    protected $encryptionKey;
+    protected $encryptionkey;
 
     abstract public function authenticate(string $password): bool;
-    abstract public function getEncryptionKey(): string;
+    abstract public function getencryptionkey(): string;
+    abstract public function getusername(): string;
+    abstract public function getid(): int;
 }
-?>

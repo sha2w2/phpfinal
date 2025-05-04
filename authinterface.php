@@ -1,10 +1,10 @@
 <?php
-namespace app\core;
+namespace App\Core;
 
-interface authInterface {
+interface authinterface {
     public function register(string $username, string $password): bool;
     public function login(string $username, string $password): bool;
     public function logout(): void;
-    public function isLoggedIn(): bool;
+    public function isloggedin(): bool;
+    public function changepassword(string $oldpassword, string $newpassword): bool;
 }
-?>

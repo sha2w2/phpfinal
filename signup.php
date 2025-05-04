@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("location: login.php");
             exit;
         } else {
-            echo "Something went wrong. Please try again later.";
+            $username_err = "This username is already taken.";
         }
     }
 }
@@ -59,6 +59,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .wrapper{ width: 360px; padding: 20px; margin: 0 auto; }
         .form-group { margin-bottom: 15px; }
         .help-block { color: red; }
+        .form-control { width: 100%; padding: 8px; }
+        .btn { padding: 8px 15px; margin-right: 10px; }
+        .is-invalid { border-color: red; }
     </style>
 </head>
 <body>
@@ -82,8 +85,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <span class="help-block"><?php echo $confirm_password_err; ?></span>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="reset" class="btn btn-default" value="Reset">
+                <input type="submit" class="btn" value="Submit">
+                <input type="reset" class="btn" value="Reset">
             </div>
             <p>Already have an account? <a href="login.php">Login here</a>.</p>
         </form>

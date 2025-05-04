@@ -1,11 +1,11 @@
 <?php
-namespace app\core;
+namespace App\Core;
 
-trait loggerTrait {
-    protected function logActivity(string $message): void {
-        $logFile = __DIR__ . '/../logs/activity.log';
+trait loggertrait {
+    protected function logactivity(string $message): void {
+        $logfile = __DIR__ . '/../logs/activity.log';
         $timestamp = date('Y-m-d H:i:s');
-        file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
+        file_put_contents($logfile, "[$timestamp] $message\n", FILE_APPEND);
     }
 }
 ?>

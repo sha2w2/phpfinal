@@ -1,12 +1,24 @@
 <?php
-namespace App\Models;
+namespace app\models;
 
-use App\Core\authinterface;
-use App\Core\abstractuser;
-use App\Core\loggertrait;
-use App\Core\database;
+use app\core\authinterface;
+use app\core\abstractuser;
+use app\core\loggertrait;
+use app\core\database;
 
 class user extends abstractuser implements authinterface {
+
+    public function authenticate($username, $password): bool {
+        return $this->login($username, $password);
+    }
+
+    public function getusername(): string {
+        return $_SESSION['username'] ?? '';
+    } 
+
+    public function getid(): int {
+        return $_SESSION['id'] ?? 0;
+    }
     use loggertrait;
 
     private $db;

@@ -1,5 +1,5 @@
 <?php
-namespace App\Core;
+namespace app\core;
 
 trait loggertrait {
     protected function logactivity(string $message): void {
@@ -8,4 +8,4 @@ trait loggertrait {
         file_put_contents($logfile, "[$timestamp] $message\n", FILE_APPEND);
     }
 }
-?>
+?> 

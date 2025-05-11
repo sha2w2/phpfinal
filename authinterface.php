@@ -1,5 +1,5 @@
 <?php
-namespace App\Core;
+namespace app\core;
 
 interface authinterface {
     public function register(string $username, string $password): bool;

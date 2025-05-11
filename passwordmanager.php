@@ -1,7 +1,9 @@
 <?php
-namespace App\Services;
-
-use App\Core\database;
+namespace app\services;
+use app\core\loggertrait;
+use app\core\abstractuser;
+use app\core\authinterface;
+use app\core\database; 
 
 class passwordmanager {
     private $db;

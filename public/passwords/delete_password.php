@@ -5,9 +5,9 @@ require_once 'passwordmanager.php';
 
 session_start();
 
-$db = new database();
-$user = new user($db);
-$passwordmanager = new passwordmanager($db);
+$db = new Database();
+$user = new User($db);
+$passwordmanager = new PasswordManager($db);
 
 // Check if user is logged in
 if (!$user->isloggedin()) {

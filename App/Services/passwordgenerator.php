@@ -1,7 +1,7 @@
 <?php
-namespace app\services;
+namespace App\Services;
 
-class passwordgenerator {
+class PasswordGenerator {
     public function generate(
         int $length = 12,
         bool $useUppercase = true,

@@ -1,34 +1,41 @@
 <?php
-namespace app\models;
+namespace App\Models;
 
-use app\core\authinterface;
-use app\core\abstractuser;
-use app\core\loggertrait;
-use app\core\database;
+use App\Core\AuthInterface;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+use App\Core\AbstractUser;
+use App\Core\LoggerTrait;
+use App\Core\Database;
 
-class user extends abstractuser implements authinterface {
+class User extends AbstractUser implements AuthInterface 
+{
+    use LoggerTrait;
 
-    public function authenticate($username, $password): bool {
-        return $this->login($username, $password);
-    }
+    private Database $db;
+    private string $encryptionMethod = 'aes-256-cbc';
+    protected string $encryptionKey;
 
-    public function getusername(): string {
-        return $_SESSION['username'] ?? '';
-    } 
-
-    public function getid(): int {
-        return $_SESSION['id'] ?? 0;
-    }
-    use loggertrait;
-
-    private $db;
-    private $encryptionMethod = 'aes-256-cbc';
-
-    public function __construct(database $db) {
+    public function __construct(Database $db) 
+    {
         $this->db = $db;
     }
 
-    public function register(string $username, string $password): bool {
+    public function authenticate(string $username, string $password): bool 
+    {
+        return $this->login($username, $password);
+    }
+
+    public function getUsername(): string 
+    {
+        return $_SESSION['username'] ?? '';
+    } 
+
+    public function getId(): int 
+    {
+        return $_SESSION['id'] ?? 0;
+    }
+
+    public function register(string $username, string $password): bool 
+    {
         $conn = $this->db->getConnection();
         
         // Check if username already exists
@@ -52,23 +59,25 @@ class user extends abstractuser implements authinterface {
         return $result;
     }
 
-    public function login(string $username, string $password): bool {
+    public function login(string $username, string $password): bool 
+    {
         $conn = $this->db->getConnection();
         
         $sql = "SELECT id, password, encryption_key FROM users WHERE username = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $username);
         $stmt->execute();
-        $stmt->bind_result($id, $hashedPassword, $encryptedKey);
-        $stmt->fetch();
+        
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
         $stmt->close();
         
-        if (password_verify($password, $hashedPassword)) {
+        if ($user && password_verify($password, $user['password'])) {
             // Decrypt the master key
-            $this->encryptionKey = $this->decryptKey($encryptedKey, $password);
+            $this->encryptionKey = $this->decryptKey($user['encryption_key'], $password);
             
             if ($this->encryptionKey !== false) {
-                $_SESSION['id'] = $id;
+                $_SESSION['id'] = $user['id'];
                 $_SESSION['username'] = $username;
                 $_SESSION['encryption_key'] = $this->encryptionKey;
                 $_SESSION['logged_in'] = true;
@@ -82,18 +91,21 @@ class user extends abstractuser implements authinterface {
         return false;
     }
 
-    public function logout(): void {
+    public function logout(): void 
+    {
         $username = $_SESSION['username'] ?? '';
         session_unset();
         session_destroy();
         $this->logActivity("User $username logged out");
     }
 
-    public function isLoggedIn(): bool {
+    public function isLoggedIn(): bool 
+    {
         return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
     }
 
-    public function changePassword(string $oldPassword, string $newPassword): bool {
+    public function changePassword(string $oldPassword, string $newPassword): bool 
+    {
         if (!$this->isLoggedIn()) {
             $this->logActivity("Password change failed - user not logged in");
             return false;
@@ -102,30 +114,22 @@ class user extends abstractuser implements authinterface {
         $conn = $this->db->getConnection();
         
         // Verify old password first
-        $sql = "SELECT password FROM users WHERE id = ?";
+        $sql = "SELECT password, encryption_key FROM users WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $_SESSION['id']);
         $stmt->execute();
-        $stmt->bind_result($hashedPassword);
-        $stmt->fetch();
+        
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
         $stmt->close();
         
-        if (!password_verify($oldPassword, $hashedPassword)) {
+        if (!$user || !password_verify($oldPassword, $user['password'])) {
             $this->logActivity("Password change failed - incorrect old password for user ID: {$_SESSION['id']}");
             return false;
         }
         
-        // Get current encrypted key
-        $sql = "SELECT encryption_key FROM users WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $_SESSION['id']);
-        $stmt->execute();
-        $stmt->bind_result($encryptedKey);
-        $stmt->fetch();
-        $stmt->close();
-        
         // Decrypt with old password
-        $decryptedKey = $this->decryptKey($encryptedKey, $oldPassword);
+        $decryptedKey = $this->decryptKey($user['encryption_key'], $oldPassword);
         if ($decryptedKey === false) {
             $this->logActivity("Password change failed - key decryption failed for user ID: {$_SESSION['id']}");
             return false;
@@ -152,11 +156,13 @@ class user extends abstractuser implements authinterface {
         return $result;
     }
 
-    public function getEncryptionKey(): string {
+    public function getEncryptionKey(): string 
+    {
         return $_SESSION['encryption_key'] ?? '';
     }
 
-    private function usernameExists(string $username): bool {
+    private function usernameExists(string $username): bool 
+    {
         $conn = $this->db->getConnection();
         $sql = "SELECT id FROM users WHERE username = ?";
         $stmt = $conn->prepare($sql);
@@ -168,11 +174,13 @@ class user extends abstractuser implements authinterface {
         return $exists;
     }
 
-    private function generateEncryptionKey(): string {
+    private function generateEncryptionKey(): string 
+    {
         return openssl_random_pseudo_bytes(32);
     }
 
-    private function encryptKey(string $key, string $password): string {
+    private function encryptKey(string $key, string $password): string 
+    {
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->encryptionMethod));
         $encrypted = openssl_encrypt(
             $key,
@@ -184,7 +192,8 @@ class user extends abstractuser implements authinterface {
         return base64_encode($iv . $encrypted);
     }
 
-    private function decryptKey(string $encryptedKey, string $password): string|false {
+    private function decryptKey(string $encryptedKey, string $password): string|false 
+    {
         $data = base64_decode($encryptedKey);
         $ivLength = openssl_cipher_iv_length($this->encryptionMethod);
         $iv = substr($data, 0, $ivLength);
@@ -198,4 +207,3 @@ class user extends abstractuser implements authinterface {
         );
     }
 }
-?>

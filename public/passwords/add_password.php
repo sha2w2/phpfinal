@@ -6,10 +6,10 @@ require_once 'passwordgenerator.php';
 
 session_start();
 
-$db = new database();
-$user = new user($db);
-$passwordmanager = new passwordmanager($db);
-$passwordgenerator = new passwordgenerator();
+$db = new Database();
+$user = new User($db);
+$passwordmanager = new PasswordManager($db);
+$passwordgenerator = new PasswordGenerator();
 
 if (!$user->isloggedin()) {
     header("location: login.php");

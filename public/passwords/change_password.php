@@ -4,8 +4,8 @@ require_once 'user.php';
 
 session_start();
 
-$db = new database();
-$user = new user($db);
+$db = new Database();
+$user = new User($db);
 
 if (!$user->isloggedin()) {
     header("location: login.php");

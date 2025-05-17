@@ -1,7 +1,7 @@
 <?php
-namespace app\core;
+namespace App\Core;
 
-interface authinterface {
+interface AuthInterface {
     public function register(string $username, string $password): bool;
     public function login(string $username, string $password): bool;
     public function logout(): void;

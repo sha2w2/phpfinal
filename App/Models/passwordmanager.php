@@ -1,19 +1,23 @@
 <?php
-namespace app\services;
-use app\core\loggertrait;
-use app\core\abstractuser;
-use app\core\authinterface;
-use app\core\database; 
+namespace App\Services;
 
-class passwordmanager {
-    private $db;
-    private $encryptionMethod = 'aes-256-cbc';
+use App\Core\Database;
+use App\Core\LoggerTrait;
 
-    public function __construct(database $db) {
+class PasswordManager 
+{
+    use LoggerTrait;
+
+    private Database $db;
+    private string $encryptionMethod = 'aes-256-cbc';
+
+    public function __construct(Database $db) 
+    {
         $this->db = $db;
     }
 
-    public function encryptPassword(string $password, string $encryptionKey): string {
+    public function encryptPassword(string $password, string $encryptionKey): string 
+    {
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->encryptionMethod));
         $encrypted = openssl_encrypt(
             $password,
@@ -25,7 +29,8 @@ class passwordmanager {
         return base64_encode($iv . $encrypted);
     }
 
-    public function decryptPassword(string $encryptedPassword, string $encryptionKey): string|false {
+    public function decryptPassword(string $encryptedPassword, string $encryptionKey): string|false 
+    {
         $data = base64_decode($encryptedPassword);
         $ivLength = openssl_cipher_iv_length($this->encryptionMethod);
         $iv = substr($data, 0, $ivLength);
@@ -98,7 +103,8 @@ class passwordmanager {
         return $stmt->execute();
     }
 
-    public function getPasswords(int $userId, string $encryptionKey): array {
+    public function getPasswords(int $userId, string $encryptionKey): array 
+    {
         $conn = $this->db->getConnection();
         $sql = "SELECT id, service_name, service_username, encrypted_password, url, notes, category, favorite, created_at, updated_at 
                 FROM stored_passwords 
@@ -156,7 +162,8 @@ class passwordmanager {
         return $stmt->execute();
     }
 
-    public function deletePassword(int $passwordId): bool {
+    public function deletePassword(int $passwordId): bool 
+    {
         $conn = $this->db->getConnection();
         $sql = "DELETE FROM stored_passwords WHERE id = ?";
         $stmt = $conn->prepare($sql);
@@ -164,7 +171,8 @@ class passwordmanager {
         return $stmt->execute();
     }
 
-    public function toggleFavorite(int $passwordId, bool $favorite): bool {
+    public function toggleFavorite(int $passwordId, bool $favorite): bool 
+    {
         $conn = $this->db->getConnection();
         $sql = "UPDATE stored_passwords SET favorite = ?, updated_at = NOW() WHERE id = ?";
         $stmt = $conn->prepare($sql);
@@ -172,7 +180,8 @@ class passwordmanager {
         return $stmt->execute();
     }
 
-    public function getPasswordById(int $passwordId, string $encryptionKey): ?array {
+    public function getPasswordById(int $passwordId, string $encryptionKey): ?array 
+    {
         $conn = $this->db->getConnection();
         $sql = "SELECT * FROM stored_passwords WHERE id = ?";
         $stmt = $conn->prepare($sql);

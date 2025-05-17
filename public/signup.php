@@ -1,9 +1,20 @@
 <?php
-require_once 'db_connect.php';
-require_once 'user.php';
+require_once __DIR__ . '/../app/Core/Database.php';
+require_once __DIR__ . '/../app/Models/User.php';
 
-$db = new database();
-$user = new user($db);
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+use App\Models\User;
+use App\Core\Database;
+
+$db = new Database();
+$user = new User($db);
+
+$db = new Database();
+$user = new User($db);
 
 $username = $password = $confirm_password = "";
 $username_err = $password_err = $confirm_password_err = "";

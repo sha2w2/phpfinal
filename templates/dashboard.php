@@ -1,7 +1,9 @@
 <?php
-require_once 'db_connect.php';
-require_once 'user.php';
-require_once 'passwordmanager.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use App\Core\Database;
+use App\Models\User;
+use App\Services\PasswordManager;
 
 session_start();
 
